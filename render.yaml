@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: lostfound
+    env: python
+    region: oregon
+    plan: free
+    root: myproject
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn myproject.wsgi:application
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "*"
+
+databases:
+  - name: lostfound-db
+    engine: postgresql
+    version: "15"
+    plan: starter

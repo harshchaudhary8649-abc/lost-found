@@ -1,0 +1,273 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .form-shell {
+        max-width: 760px;
+        margin: 3rem auto 4rem;
+        padding: 0 1rem;
+    }
+
+    .form-container {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        border-radius: 30px;
+        box-shadow: 0 35px 90px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+    }
+
+    .form-panel {
+        padding: 3rem 3rem 2.5rem;
+    }
+
+    .form-top {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-top h2 {
+        font-size: clamp(2.2rem, 3.4vw, 2.8rem);
+        line-height: 1.03;
+        margin: 0;
+        color: #0f172a;
+    }
+
+    .form-top p {
+        margin: 0.9rem 0 0;
+        color: #475569;
+        line-height: 1.75;
+        font-size: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.6rem;
+        color: #334155;
+        font-weight: 600;
+        font-size: 0.96rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: rgba(248, 250, 252, 0.95);
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        border-radius: 18px;
+        color: #0f172a;
+        font-size: 1rem;
+        transition: all 0.25s ease;
+        font-family: inherit;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.12);
+        background: white;
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364758' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.2rem center;
+        padding-right: 3rem;
+        cursor: pointer;
+    }
+
+    .file-upload {
+        position: relative;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+
+    .file-upload input[type="file"] {
+        width: 100%;
+        padding: 1.3rem 1.25rem;
+        background: rgba(248, 250, 252, 0.95);
+        border: 1px dashed rgba(15, 23, 42, 0.16);
+        border-radius: 18px;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.22s ease;
+        text-align: left;
+    }
+
+    .file-upload input[type="file"]:hover,
+    .file-upload input[type="file"]:focus {
+        border-color: rgba(96, 165, 250, 0.5);
+        background: rgba(255, 255, 255, 1);
+    }
+
+    #imagePreview {
+        display: none;
+        margin-top: 1rem;
+        width: 100%;
+        max-height: 260px;
+        object-fit: cover;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1.1rem;
+        font-size: 1.03rem;
+        margin-top: 1rem;
+        border-radius: 18px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        background: linear-gradient(135deg, #60a5fa, #a78bfa);
+        color: #0f172a;
+        border: none;
+        font-weight: 700;
+        box-shadow: 0 18px 42px rgba(96, 165, 250, 0.24);
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 24px 52px rgba(96, 165, 250, 0.28);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: #475569;
+        text-decoration: none;
+        margin-bottom: 2rem;
+        transition: color 0.22s ease, transform 0.22s ease;
+    }
+
+    .back-link:hover {
+        color: #0f172a;
+        transform: translateX(-3px);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .input-helper {
+        font-size: 0.95rem;
+        color: #64748b;
+        margin-top: 0.4rem;
+    }
+
+    @media (max-width: 900px) {
+        .form-panel {
+            padding: 2.2rem 1.6rem 2rem;
+        }
+
+        .form-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="form-shell">
+    <a href="/" class="back-link" data-aos="fade-right">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Home
+    </a>
+
+    <div class="form-container" data-aos="zoom-in" data-aos-delay="100">
+        <div class="form-panel">
+            <div class="form-top">
+                <div class="heading">
+                    <h2>Report an Item</h2>
+                    <p>Submit a lost or found item with clear details so the community can help reunite it quickly.</p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">Item Name <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Black Leather Wallet, Keys, iPhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description <span style="color:#ef4444;">*</span></label>
+                    <textarea name="description" class="form-control" placeholder="Provide details like color, brand, specific marks..." required></textarea>
+                    <div class="input-helper">Tell us what makes the item unique for faster matching.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Location (Where did you lose/find it?) <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="location" class="form-control" placeholder="e.g. Central Park near the fountain" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status <span style="color:#ef4444;">*</span></label>
+                    <select name="status" class="form-control" required>
+                        <option value="" disabled selected>Select status...</option>
+                        <option value="Lost">I Lost This Item</option>
+                        <option value="Found">I Found This Item</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contact Number <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="contact" class="form-control" placeholder="e.g. +91 9876543210" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Upload Image (Optional but highly recommended)</label>
+                    <div class="file-upload">
+                        <input type="file" name="image" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                    </div>
+                    <img id="imagePreview" src="#" alt="Image Preview">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Submit Report
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('imagePreview');
+            output.src = reader.result;
+            output.style.display = 'block';
+        };
+        if (input.files && input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}

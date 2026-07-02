@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; padding: 4rem 1rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">My History</h1>
+    <p style="color: #64748b; font-size: 1.1rem;">Review the items you reported and remove them when the case is resolved.</p>
+</div>
+
+{% if items %}
+<div class="history-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin: 0 1.5rem 2rem;">
+    {% for item in items %}
+    <div class="history-card" style="background:#fff; border-radius:18px; padding:1.5rem; box-shadow:0 16px 40px rgba(15,23,42,.06); border:1px solid #e2e8f0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; gap:.75rem;">
+            <div>
+                <h2 style="font-size:1.2rem; margin:0 0 .35rem;">{{ item.name }}</h2>
+                <span style="color:#64748b; font-size:.95rem;">{{ item.created_at|date:'M d, Y' }} - {{ item.status }}</span>
+            </div>
+            <a href="/delete/{{ item.id }}/" style="background:#ef4444; color:#fff; padding:.65rem 1rem; border-radius:999px; text-decoration:none; font-weight:600;">Remove</a>
+        </div>
+        <p style="color:#334155; margin:0 0 1rem;">{{ item.description|truncatechars:120 }}</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; color:#475569; font-size:.95rem;">
+            <span style="background:#f8fafc; padding:.5rem .75rem; border-radius:999px;">Location: {{ item.location }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state" style="text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1; margin: 0 1.5rem;">
+    <p>You haven't reported any items yet. Add a new lost or found report to start your history.</p>
+</div>
+{% endif %}
+{% endblock %}

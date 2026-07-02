@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auth-container {
+        max-width: 450px;
+        margin: 4rem auto;
+        background: white;
+        padding: 3rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid var(--card-border);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+    }
+
+    .auth-form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .auth-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: #f8fafc;
+    }
+
+    .auth-input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 0.9rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .auth-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .auth-link a {
+        color: var(--accent-primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+
+<div class="auth-container" data-aos="zoom-in">
+    <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Login to report items or manage your profile</p>
+    </div>
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="auth-form-group">
+            <label class="auth-label">Email Address</label>
+            <input type="email" name="email" class="auth-input" placeholder="e.g. harsh@example.com" required>
+        </div>
+        <div class="auth-form-group">
+            <label class="auth-label">Password</label>
+            <input type="password" name="password" class="auth-input" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth">Login</button>
+    </form>
+
+    <div class="auth-link">
+        Don't have an account? <a href="{% url 'register' %}">Sign Up</a>
+    </div>
+</div>
+{% endblock %}

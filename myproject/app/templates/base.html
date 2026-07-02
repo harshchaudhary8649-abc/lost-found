@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found Portal</title>
+    <!-- Modern Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Theme Color Palette */
+            --bg-color: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+
+            --nav-bg: rgba(255, 255, 255, 0.78);
+            --nav-text: #52605c;
+            --nav-active: #0f766e;
+
+            --accent-primary: #0f766e;
+            --accent-primary-hover: #115e59;
+            --accent-lost: #ef4444;
+            /* Rose Red */
+            --accent-found: #10b981;
+            /* Emerald Green */
+
+            --card-border: #e2e8f0;
+            --card-bg: #ffffff;
+
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styling */
+        nav {
+            background: var(--nav-bg);
+            border-bottom: 1px solid rgba(15, 118, 110, 0.12);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(18px);
+            padding: 0 5%;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            /* Reduced gap as requested */
+            height: 100%;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f766e;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            /* Reduced gap as requested */
+            height: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            width: 42px;
+            height: 42px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(15, 118, 110, 0.18);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.74);
+            color: var(--accent-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(15, 118, 110, 0.08);
+            border-color: rgba(15, 118, 110, 0.32);
+        }
+
+        .nav-toggle svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .nav-link {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+            padding: 0 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: #0f766e;
+        }
+
+        .nav-link.active {
+            color: var(--nav-active);
+            border-bottom-color: var(--nav-active);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            box-shadow: 0 12px 26px rgba(15, 118, 110, 0.22);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-primary-hover), #0d9488);
+            box-shadow: 0 16px 32px rgba(15, 118, 110, 0.28);
+        }
+
+        /* Profile Dropdown Styling */
+        .profile-dropdown-container {
+            position: relative;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--nav-text);
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            color: #0f766e;
+            background: rgba(15, 118, 110, 0.08);
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            background: #0f766e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 15px);
+            right: 0;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            width: 280px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .avatar.large {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-primary);
+        }
+
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info-text strong {
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .user-info-text .email {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .dropdown-body {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .info-row .label {
+            color: var(--text-muted);
+        }
+
+        .info-row .value {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .update-img-btn {
+            width: 100%;
+            background: white;
+            border: 1px dashed var(--card-border);
+            color: var(--accent-primary);
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+
+        .update-img-btn:hover {
+            border-color: var(--accent-primary);
+            background: #f0f9ff;
+        }
+
+        .dropdown-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--card-border);
+            background: #f8fafc;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-lost);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+
+        /* Main Content Container */
+        main {
+            flex: 1;
+            padding: 0 5%;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+            border-top: 1px solid var(--card-border);
+        }
+
+        /* Toasts container */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .toast {
+            background: white;
+            border-left: 4px solid var(--accent-primary);
+            color: var(--text-main);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards, fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) 4s forwards;
+            opacity: 0;
+            transform: translateX(100%);
+            font-weight: 500;
+        }
+
+        .toast.success {
+            border-color: var(--accent-found);
+        }
+
+        .toast.error {
+            border-color: var(--accent-lost);
+        }
+
+        .toast.warning {
+            border-color: #f59e0b;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+                margin-bottom: -70px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            nav {
+                padding: 0 1rem;
+            }
+
+            .nav-left {
+                min-width: 0;
+            }
+
+            .nav-brand {
+                margin-right: 0;
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: calc(100% + 0.7rem);
+                left: 1rem;
+                right: 1rem;
+                z-index: 180;
+                display: none;
+                height: auto;
+                flex-direction: column;
+                gap: 0.25rem;
+                padding: 0.6rem;
+                background: rgba(255, 255, 255, 0.98);
+                border: 1px solid rgba(15, 118, 110, 0.14);
+                border-radius: 14px;
+                box-shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+                backdrop-filter: blur(18px);
+            }
+
+            .nav-links.show {
+                display: flex;
+                animation: fadeIn 0.2s ease;
+            }
+
+            .nav-link {
+                height: auto;
+                padding: 0.85rem 1rem;
+                border-bottom: 0;
+                border-radius: 10px;
+                font-size: 0.95rem;
+            }
+
+            .nav-link.active {
+                background: rgba(15, 118, 110, 0.1);
+                border-bottom-color: transparent;
+            }
+
+            .nav-right {
+                gap: 0.7rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-brand {
+                font-size: 1rem;
+            }
+
+            .nav-right .btn-primary {
+                width: 42px;
+                height: 42px;
+                padding: 0;
+                font-size: 0;
+                gap: 0;
+            }
+
+            .nav-right .btn-primary svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .user-profile {
+                font-size: 0;
+                gap: 0;
+                padding: 0.4rem;
+            }
+
+            .user-profile > svg {
+                display: none;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .nav-brand {
+                font-size: 0.84rem;
+                gap: 0.35rem;
+                margin-right: 0;
+                white-space: nowrap;
+            }
+
+            .nav-brand svg {
+                width: 22px;
+                height: 22px;
+                flex: 0 0 auto;
+            }
+
+            .nav-right {
+                gap: 0.45rem;
+            }
+
+            .nav-right > .btn:not(.btn-primary) {
+                padding: 0.5rem 0.65rem;
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-left">
+            <a href="/" class="nav-brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                    </path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                Lost & Found
+            </a>
+            <div class="nav-links" id="primaryNavLinks">
+                <!-- REDUCED GAPS & REMOVED "REPORT ITEM" FROM HERE -->
+                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/browse/" class="nav-link {% if request.path == '/browse/' %}active{% endif %}">Browse
+                    Items</a>
+                <a href="/my-reports/" class="nav-link {% if request.path == '/my-reports/' %}active{% endif %}">My
+                    History</a>
+                <a href="/how-it-works/" class="nav-link {% if request.path == '/how-it-works/' %}active{% endif %}">How
+                    It Works</a>
+                <a href="/contact/" class="nav-link {% if request.path == '/contact/' %}active{% endif %}">Contact</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"
+                aria-controls="primaryNavLinks" onclick="toggleMobileNav(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="7" x2="20" y2="7"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="17" x2="20" y2="17"></line>
+                </svg>
+            </button>
+            <a href="/add/" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Report an Item
+            </a>
+
+            <!-- Dynamic Auth Section -->
+            {% if request.user.is_authenticated %}
+            <div class="profile-dropdown-container">
+                <div class="user-profile" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        {% if request.user.userprofile.profile_image %}
+                        <img src="{{ request.user.userprofile.profile_image.url }}" alt="Avatar"
+                            style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                        {% else %}
+                        {{ request.user.first_name|slice:":1"|upper }}
+                        {% endif %}
+                    </div>
+                    {{ request.user.first_name }}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <div class="dropdown-menu" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <div class="avatar large">
+                            {% if request.user.userprofile.profile_image %}
+                            <img src="{{ request.user.userprofile.profile_image.url }}" alt="Avatar"
+                                style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                            {% else %}
+                            {{ request.user.first_name|slice:":1"|upper }}
+                            {% endif %}
+                        </div>
+                        <div class="user-info-text">
+                            <strong>{{ request.user.first_name }}</strong>
+                            <span class="email">{{ request.user.email }}</span>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-body">
+                        <div class="info-row">
+                            <span class="label">Contact:</span>
+                            <span class="value">{{ request.user.userprofile.contact_number }}</span>
+                        </div>
+                        <a href="{% url 'profile' %}" style="text-decoration:none;">
+                            <button class="update-img-btn">Update Profile</button>
+                        </a>
+                    </div>
+
+                    <div class="dropdown-footer">
+                        <a href="{% url 'logout' %}" class="logout-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Not logged in -->
+            <a href="{% url 'login' %}" class="btn"
+                style="color:#0f766e; border: 1px solid rgba(15,118,110,0.22); background: rgba(255,255,255,0.55);">Login
+                / Sign Up</a>
+            {% endif %}
+
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Lost & Found. Built perfectly.</p>
+    </footer>
+
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+            {% if message.tags == 'success' %}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-found)" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            {% elif message.tags == 'error' or message.tags == 'warning' %}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lost)" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {% else %}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            {% endif %}
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init animations
+        AOS.init({ duration: 800, once: true, offset: 50 });
+
+        // Remove toasts
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(t => t.remove());
+        }, 4500);
+
+        // Profile Dropdown Logic
+        function toggleDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        function toggleMobileNav(button) {
+            const navLinks = document.getElementById('primaryNavLinks');
+            const isOpen = navLinks.classList.toggle('show');
+            button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            button.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        }
+
+        function closeMobileNav() {
+            const navLinks = document.getElementById('primaryNavLinks');
+            const navToggle = document.querySelector('.nav-toggle');
+
+            if (navLinks && navLinks.classList.contains('show')) {
+                navLinks.classList.remove('show');
+            }
+
+            if (navToggle) {
+                navToggle.setAttribute('aria-expanded', 'false');
+                navToggle.setAttribute('aria-label', 'Open menu');
+            }
+        }
+
+        document.querySelectorAll('#primaryNavLinks .nav-link').forEach((link) => {
+            link.addEventListener('click', closeMobileNav);
+        });
+
+        // Close dropdown when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.closest('.profile-dropdown-container')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+
+            if (!event.target.closest('nav')) {
+                closeMobileNav();
+            }
+        }
+    </script>
+</body>
+
+</html>

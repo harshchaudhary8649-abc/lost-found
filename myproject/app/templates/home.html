@@ -1,0 +1,678 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f7fbf4 0%, #e2f3df 48%, #ffe8d1 100%);
+    }
+
+    .home-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .hero-section {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .hero-copy {
+        display: grid;
+        gap: 1.1rem;
+    }
+
+    .hero-eyebrow {
+        width: fit-content;
+        border: 1px solid rgba(15, 118, 110, 0.14);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.62);
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+        padding: 0.58rem 0.9rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #0f766e;
+        text-transform: uppercase;
+    }
+
+    .hero-title {
+        font-size: 5.2rem;
+        line-height: 0.96;
+        margin: 0;
+        color: #111827;
+        letter-spacing: 0;
+    }
+
+    .hero-title span {
+        display: block;
+    }
+
+    .hero-title .accent {
+        color: #0f766e;
+    }
+
+    .hero-copy p {
+        margin: 0;
+        font-size: 1rem;
+        color: #475569;
+        line-height: 1.75;
+        max-width: 640px;
+    }
+
+    .search-panel {
+        margin-top: 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(15, 118, 110, 0.14);
+        border-radius: 18px;
+        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-panel::before {
+        content: "";
+        position: absolute;
+        left: 1.15rem;
+        top: 50%;
+        width: 12px;
+        height: 12px;
+        border: 2px solid #0f766e;
+        border-radius: 50%;
+        transform: translateY(-58%);
+    }
+
+    .search-panel::after {
+        content: "";
+        position: absolute;
+        left: 1.95rem;
+        top: 55%;
+        width: 8px;
+        height: 2px;
+        border-radius: 999px;
+        background: #0f766e;
+        transform: rotate(45deg);
+    }
+
+    .search-panel input {
+        width: 100%;
+        border: none;
+        padding: 1.15rem 1.25rem 1.15rem 3rem;
+        font-size: 0.95rem;
+        color: #0f172a;
+        background: transparent;
+        outline: none;
+    }
+
+    .search-panel input::placeholder {
+        color: #94a3b8;
+    }
+
+    .hero-visual {
+        min-height: 420px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        padding: 1rem;
+        position: relative;
+        isolation: isolate;
+    }
+
+    .hero-visual::before,
+    .hero-visual::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        pointer-events: none;
+    }
+
+    .hero-visual::before {
+        width: 280px;
+        height: 280px;
+        right: 0;
+        top: 0;
+        background: rgba(255, 232, 209, 0.42);
+        filter: blur(6px);
+        z-index: -1;
+    }
+
+    .hero-visual::after {
+        width: 260px;
+        height: 260px;
+        left: -20px;
+        bottom: -20px;
+        background: rgba(204, 251, 241, 0.48);
+        filter: blur(8px);
+        z-index: -1;
+    }
+
+    .finder-scene {
+        width: min(100%, 430px);
+        aspect-ratio: 1.08;
+        position: relative;
+        z-index: 1;
+    }
+
+    .finder-ring {
+        position: absolute;
+        border: 1px solid rgba(15, 118, 110, 0.16);
+        border-radius: 50%;
+        inset: 10%;
+    }
+
+    .finder-ring.two {
+        inset: 22%;
+        border-color: rgba(249, 115, 22, 0.22);
+    }
+
+    .finder-ring.three {
+        inset: 34%;
+        border-color: rgba(15, 118, 110, 0.22);
+    }
+
+    .finder-core {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 154px;
+        height: 154px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f766e, #14b8a6);
+        color: white;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 24px 52px rgba(15, 118, 110, 0.28);
+    }
+
+    .finder-core span,
+    .finder-chip span {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: inherit;
+    }
+
+    .finder-core strong {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 1.08rem;
+        line-height: 1.25;
+    }
+
+    .finder-chip {
+        position: absolute;
+        width: 168px;
+        border: 1px solid rgba(15, 118, 110, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.62);
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+        backdrop-filter: blur(14px);
+        padding: 0.82rem 0.92rem;
+        color: #64748b;
+    }
+
+    .finder-chip strong {
+        display: block;
+        color: #111827;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+
+    .finder-chip.lost {
+        left: 0;
+        top: 20%;
+        border-color: rgba(249, 115, 22, 0.24);
+    }
+
+    .finder-chip.found {
+        right: 0;
+        top: 12%;
+    }
+
+    .finder-chip.returned {
+        right: 9%;
+        bottom: 9%;
+    }
+
+    .finder-chip.searching {
+        left: 8%;
+        bottom: 12%;
+        border-color: rgba(20, 184, 166, 0.22);
+    }
+
+    .finder-dot {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #f97316;
+        box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.12);
+    }
+
+    .finder-dot.one {
+        left: 17%;
+        top: 49%;
+    }
+
+    .finder-dot.two {
+        right: 20%;
+        top: 45%;
+        background: #0f766e;
+        box-shadow: 0 0 0 8px rgba(15, 118, 110, 0.12);
+    }
+
+    .finder-line {
+        position: absolute;
+        height: 3px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #f97316, #0f766e);
+        opacity: 0.32;
+        transform-origin: left center;
+    }
+
+    .finder-line.one {
+        left: 21%;
+        top: 51%;
+        width: 150px;
+        transform: rotate(-12deg);
+    }
+
+    .finder-line.two {
+        right: 21%;
+        top: 48%;
+        width: 130px;
+        transform: rotate(22deg);
+    }
+
+    .finder-pulse {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 1px solid rgba(15, 118, 110, 0.2);
+        transform: translate(-50%, -50%);
+        animation: pulseRing 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseRing {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(0.92);
+            opacity: 0.3;
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.08);
+            opacity: 0.75;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .finder-pulse {
+            animation: none;
+        }
+    }
+
+    .hero-visual > * {
+        width: 100%;
+        max-width: 430px;
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin: 3rem auto 1.5rem;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #111827;
+    }
+
+    .section-heading a {
+        color: #0f766e;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .items-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .item-card {
+        min-height: 196px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(15, 118, 110, 0.14);
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        display: grid;
+        grid-template-columns: 148px minmax(0, 1fr);
+        position: relative;
+    }
+
+    .item-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 4px;
+        background: #0f766e;
+    }
+
+    .item-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(15, 118, 110, 0.32);
+        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.1);
+    }
+
+    .item-image {
+        min-height: 196px;
+        height: 100%;
+        background: linear-gradient(135deg, #eef2ff 0%, #ecfeff 100%);
+        position: relative;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: #64748b;
+        font-size: 0.92rem;
+        font-weight: 700;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        position: relative;
+        padding: 1rem;
+        color: #475569;
+        font-weight: 700;
+        background:
+            linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(249, 115, 22, 0.08)),
+            #f8fafc;
+    }
+
+    .no-image-placeholder::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        border: 2px solid rgba(15, 118, 110, 0.22);
+        transform: translate(-50%, -90%) rotate(8deg);
+    }
+
+    .pill-status {
+        position: absolute;
+        left: 0.75rem;
+        top: 0.75rem;
+        padding: 0.34rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+    }
+
+    .pill-status.lost {
+        background: #ef4444;
+    }
+
+    .pill-status.found {
+        background: #10b981;
+    }
+
+    .item-body {
+        padding: 1rem 1rem 1rem 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.78rem;
+        min-width: 0;
+    }
+
+    .item-title {
+        margin: 0;
+        font-size: 1.1rem;
+        line-height: 1.22;
+        font-weight: 800;
+        color: #0f172a;
+        overflow-wrap: anywhere;
+    }
+
+    .item-meta {
+        display: grid;
+        gap: 0.48rem;
+        color: #475569;
+        font-size: 0.85rem;
+        line-height: 1.45;
+    }
+
+    .item-meta > span {
+        display: flex;
+        align-items: center;
+        gap: 0.52rem;
+        min-width: 0;
+    }
+
+    .meta-icon {
+        width: 18px;
+        height: 18px;
+        color: #0f766e;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+    }
+
+    .meta-icon svg,
+    .owner-avatar svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .meta-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .item-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        color: #64748b;
+        font-size: 0.82rem;
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .owner-info {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        gap: 0.55rem;
+        color: #111827;
+        font-weight: 700;
+    }
+
+    .owner-name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .owner-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: rgba(15, 118, 110, 0.08);
+        display: grid;
+        place-items: center;
+        color: #0f766e;
+        flex: 0 0 auto;
+    }
+
+    @media (max-width: 1080px) {
+        .hero-title { font-size: 4.1rem; }
+        .items-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 860px) {
+        .hero-section { grid-template-columns: 1fr; }
+        .hero-visual { min-height: 360px; }
+        .stats-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+        .home-page { padding: 1.5rem 1rem 2rem; }
+        .hero-title { font-size: 2.6rem; line-height: 1; }
+        .hero-copy p { font-size: 0.95rem; }
+        .hero-visual { min-height: 400px; padding: 1.2rem; border-radius: 24px; }
+        .finder-core { width: 126px; height: 126px; }
+        .finder-core strong { font-size: 0.9rem; }
+        .finder-chip { width: 128px; padding: 0.66rem 0.72rem; border-radius: 14px; }
+        .finder-chip strong { font-size: 0.82rem; }
+        .search-panel { grid-template-columns: 1fr; }
+        .item-card { grid-template-columns: 126px minmax(0, 1fr); }
+        .item-image { min-height: 184px; }
+        .section-heading { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+        .stats-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+        .item-card { grid-template-columns: 1fr; }
+        .item-image { min-height: 170px; }
+        .item-card::before { width: 100%; height: 4px; inset: 0 0 auto 0; }
+    }
+</style>
+
+<div class="home-page">
+    <section class="hero-section">
+        <div class="hero-copy">
+            <span class="hero-eyebrow">Lost & Found Hub</span>
+            <h1 class="hero-title">
+                <span>Lost it?</span>
+                <span class="accent">Find it faster.</span>
+            </h1>
+            <p>Report an item, browse recent posts, and connect with the person who found it.</p>
+
+            <form action="/browse/" method="get" class="search-panel">
+                <input type="text" name="q" placeholder="Search lost or found items...">
+            </form>
+        </div>
+
+        <div class="hero-visual">
+            <div class="finder-scene" aria-label="Lost and found flow">
+                <div class="finder-ring"></div>
+                <div class="finder-ring two"></div>
+                <div class="finder-ring three"></div>
+                <div class="finder-pulse"></div>
+                <div class="finder-line one"></div>
+                <div class="finder-line two"></div>
+                <div class="finder-dot one"></div>
+                <div class="finder-dot two"></div>
+                <div class="finder-core">
+                    <div>
+                        <span>Flow</span>
+                        <strong>Report<br>Match<br>Return</strong>
+                    </div>
+                </div>
+                <div class="finder-chip lost">
+                    <strong>Create Report</strong>
+                </div>
+                <div class="finder-chip found">
+                    <strong>AI & Community Match</strong>
+                </div>
+                <div class="finder-chip returned">
+                    <strong>Owner Verification</strong>
+                </div>
+                <div class="finder-chip searching">
+                    <strong>Successful Return</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-heading">
+        <h2>Recent Items</h2>
+        <a href="/browse/">View All -></a>
+    </section>
+
+    <div class="items-grid">
+        {% for item in items %}
+            <article class="item-card" data-aos="fade-up">
+                <div class="item-image">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+                        <div class="no-image-placeholder">No image</div>
+                    {% endif %}
+                    <span class="pill-status {% if item.status == 'Lost' %}lost{% else %}found{% endif %}">{{ item.status }}</span>
+                </div>
+                <div class="item-body">
+                    <div>
+                        <h3 class="item-title">{{ item.name }}</h3>
+                    </div>
+                    <div class="item-meta">
+                        <span>
+                            <span class="meta-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            </span>
+                            <span class="meta-text">{{ item.location|default:'Unknown location' }}</span>
+                        </span>
+                        <span>
+                            <span class="meta-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                            </span>
+                            <span class="meta-text">{{ item.created_at|timesince }} ago</span>
+                        </span>
+                        <span>
+                            <span class="meta-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.91.33 1.79.63 2.63a2 2 0 0 1-.45 2.11L8 9.7a16 16 0 0 0 6.3 6.3l1.24-1.24a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.63.63A2 2 0 0 1 22 16.92Z"></path></svg>
+                            </span>
+                            <span class="meta-text">{{ item.contact }}</span>
+                        </span>
+                    </div>
+                    <div class="item-footer">
+                        <span class="owner-info">
+                            <span class="owner-avatar" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </span>
+                            <span class="owner-name">{% if item.owner %}{{ item.owner.username }}{% else %}Community{% endif %}</span>
+                        </span>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-card">No reports found yet. Add the first lost or found item.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
