@@ -12,6 +12,7 @@ db.sqlite3
 /media/
 myproject/media/
 /staticfiles/
+myproject/staticfiles/
 *.log
 
 # Environment variables

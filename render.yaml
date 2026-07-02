@@ -1,20 +1,29 @@
 services:
   - type: web
     name: lostfound
-    env: python
+    runtime: python
     region: oregon
     plan: free
     root: myproject
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    preDeployCommand: python manage.py migrate --noinput
     startCommand: gunicorn myproject.wsgi:application
+    healthCheckPath: /
+    autoDeployTrigger: commit
     envVars:
       - key: DJANGO_DEBUG
         value: "False"
       - key: DJANGO_ALLOWED_HOSTS
         value: "*"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lostfound-db
+          property: connectionString
 
 databases:
   - name: lostfound-db
-    engine: postgresql
-    version: "15"
-    plan: starter
+    region: oregon
+    plan: free
+    postgresMajorVersion: "15"
